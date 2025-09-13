@@ -26,7 +26,7 @@ app.use(
   cors({
     origin: [
       process.env.CLIENT_URL || "http://localhost:5173",
-      "http://localhost:5173", // fallback for dev
+      "http://localhost:4173", // fallback for dev
     ],
     credentials: true,
   })
