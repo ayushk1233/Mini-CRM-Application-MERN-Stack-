@@ -7,14 +7,18 @@ const customerSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   email: Joi.string().email().required(),
   phone: Joi.string().max(20).allow(''),
-  company: Joi.string().max(100).allow('')
+  company: Joi.string().max(100).allow(''),
+  address: Joi.string().max(200).allow(''),
+  industry: Joi.string().max(100).allow('')
 });
 
 const updateCustomerSchema = Joi.object({
   name: Joi.string().min(2).max(100),
   email: Joi.string().email(),
   phone: Joi.string().max(20).allow(''),
-  company: Joi.string().max(100).allow('')
+  company: Joi.string().max(100).allow(''),
+  address: Joi.string().max(200).allow(''),
+  industry: Joi.string().max(100).allow('')
 });
 
 // @desc    Create a new customer
@@ -135,38 +139,46 @@ const getCustomerById = async (req, res) => {
 // @route   PUT /api/customers/:id
 // @access  Private
 const updateCustomer = async (req, res) => {
-  const { error } = updateCustomerSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({
+  try {
+    const { error } = updateCustomerSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: error.details[0].message
+      });
+    }
+
+    let query = { _id: req.params.id };
+    
+    // Role-based filtering
+    if (req.user.role !== 'admin') {
+      query.ownerId = req.user._id;
+    }
+    
+    const customer = await Customer.findOneAndUpdate(
+      query,
+      { $set: req.body },
+      { new: true, runValidators: true }
+    );
+
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: 'Customer not found or access denied'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: customer
+    });
+  } catch (error) {
+    console.error('Error updating customer:', error);
+    res.status(500).json({
       success: false,
-      message: error.details[0].message
+      message: 'Error updating customer'
     });
   }
-
-  let query = { _id: req.params.id };
-  
-  // Role-based filtering
-  if (req.user.role !== 'admin') {
-    query.ownerId = req.user._id;
-  }
-
-  const customer = await Customer.findOneAndUpdate(
-    query,
-    req.body,
-    { new: true, runValidators: true }
-  );
-
-  if (!customer) {
-    return res.status(404).json({
-      success: false,
-      message: 'Customer not found or access denied'
-    });
-  }
-
-  res.json({
-    success: true,
-    data: customer
-  });
 };
 
 // @desc    Delete customer
