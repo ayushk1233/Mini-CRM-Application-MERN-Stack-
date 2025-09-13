@@ -8,6 +8,7 @@ const {
   deleteCustomer
 } = require('../controllers/customerController');
 const auth = require('../middleware/auth');
+const { requireAdmin } = require('../middleware/role');
 const leadRoutes = require('./leads');
 
 // All customer routes require authentication
@@ -16,13 +17,13 @@ router.use(auth);
 // Use nested lead routes
 router.use('/:customerId/leads', leadRoutes);
 
-router.route('/')
-  .post(createCustomer)
-  .get(getCustomers);
+// GET routes - accessible to all authenticated users
+router.get('/', getCustomers);
+router.get('/:id', getCustomerById);
 
-router.route('/:id')
-  .get(getCustomerById)
-  .put(updateCustomer)
-  .delete(deleteCustomer);
+// POST, PUT, DELETE routes - admin only
+router.post('/', requireAdmin, createCustomer);
+router.put('/:id', requireAdmin, updateCustomer);
+router.delete('/:id', requireAdmin, deleteCustomer);
 
 module.exports = router;

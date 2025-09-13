@@ -11,7 +11,10 @@ const getLeadsByStatus = async (req, res) => {
     
     // Role-based filtering
     if (req.user.role !== 'admin') {
-      query.ownerId = req.user._id;
+      // Find all customers owned by the user
+      const userCustomers = await Customer.find({ ownerId: req.user._id }).select('_id');
+      const customerIds = userCustomers.map(c => c._id);
+      query.customerId = { $in: customerIds };
     }
 
     const leadsByStatus = await Lead.aggregate([
@@ -105,7 +108,77 @@ const getStats = async (req, res) => {
   }
 };
 
+// @desc    Get lead statistics by status
+// @route   GET /api/analytics/leads
+// @access  Private
+const getLeadStats = async (req, res) => {
+  try {
+    let query = {};
+    
+    // Role-based filtering
+    if (req.user.role !== 'admin') {
+      // Find all customers owned by the user
+      const userCustomers = await Customer.find({ ownerId: req.user._id }).select('_id');
+      const customerIds = userCustomers.map(c => c._id);
+      query.customerId = { $in: customerIds };
+    }
+
+    // Get leads by status count and total value in parallel
+    const [leadsByStatus, valueByStatus] = await Promise.all([
+      Lead.aggregate([
+        { $match: query },
+        {
+          $group: {
+            _id: '$status',
+            count: { $sum: 1 }
+          }
+        },
+        { $sort: { _id: 1 } }
+      ]),
+      Lead.aggregate([
+        { $match: query },
+        {
+          $group: {
+            _id: '$status',
+            totalValue: { $sum: '$value' }
+          }
+        },
+        { $sort: { _id: 1 } }
+      ])
+    ]);
+
+    // Ensure all statuses are represented
+    const allStatuses = ['New', 'Contacted', 'Converted', 'Lost'];
+    
+    // Fill in missing statuses with zero values
+    const normalizedLeadsByStatus = allStatuses.map(status => ({
+      _id: status,
+      count: leadsByStatus.find(item => item._id === status)?.count || 0
+    }));
+
+    const normalizedValueByStatus = allStatuses.map(status => ({
+      _id: status,
+      totalValue: valueByStatus.find(item => item._id === status)?.totalValue || 0
+    }));
+
+    res.json({
+      success: true,
+      data: {
+        leadsByStatus: normalizedLeadsByStatus,
+        valueByStatus: normalizedValueByStatus
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getLeadsByStatus,
-  getStats
+  getStats,
+  getLeadStats
 };

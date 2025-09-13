@@ -7,17 +7,18 @@ const {
   updateLead,
   deleteLead
 } = require('../controllers/leadController');
+const { requireAdmin } = require('../middleware/role');
 
 // All routes here are already under /api/customers/:customerId/leads
 // and authentication is handled by the parent router
 
-router.route('/')
-  .post(createLead)
-  .get(getLeads);
+// GET routes - accessible to all authenticated users
+router.get('/', getLeads);
+router.get('/:leadId', getLeadById);
 
-router.route('/:leadId')
-  .get(getLeadById)
-  .put(updateLead)
-  .delete(deleteLead);
+// POST, PUT, DELETE routes - admin only
+router.post('/', requireAdmin, createLead);
+router.put('/:leadId', requireAdmin, updateLead);
+router.delete('/:leadId', requireAdmin, deleteLead);
 
 module.exports = router;

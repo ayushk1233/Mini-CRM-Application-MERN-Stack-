@@ -6,14 +6,14 @@ const Joi = require('joi');
 const leadSchema = Joi.object({
   title: Joi.string().min(2).max(200).required(),
   description: Joi.string().max(1000).allow(''),
-  status: Joi.string().valid('New', 'Contacted', 'Converted', 'Lost').default('New'),
+  status: Joi.string().valid('New', 'Contacted', 'Qualified', 'Won', 'Lost').default('New'),
   value: Joi.number().min(0).default(0)
 });
 
 const updateLeadSchema = Joi.object({
   title: Joi.string().min(2).max(200),
   description: Joi.string().max(1000).allow(''),
-  status: Joi.string().valid('New', 'Contacted', 'Converted', 'Lost'),
+  status: Joi.string().valid('New', 'Contacted', 'Qualified', 'Won', 'Lost'),
   value: Joi.number().min(0)
 });
 
