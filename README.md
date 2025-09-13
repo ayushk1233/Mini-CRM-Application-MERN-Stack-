@@ -44,6 +44,14 @@
 - Smooth animations & transitions
 - Real-time toast notifications
 
+### 📸 Screenshots 
+<img width="1401" height="765" alt="Screenshot 2025-09-14 at 3 38 30 AM" src="https://github.com/user-attachments/assets/bcd85103-7a7e-439a-bb9f-71d958b62628" />
+<img width="1399" height="797" alt="Screenshot 2025-09-14 at 3 38 43 AM" src="https://github.com/user-attachments/assets/09baea12-226e-44bf-b65c-6d837da6005b" />
+<img width="1397" height="793" alt="Screenshot 2025-09-14 at 3 38 53 AM" src="https://github.com/user-attachments/assets/39d80aca-655a-4eec-91eb-0bb76bdc3a75" />
+<img width="1401" height="791" alt="Screenshot 2025-09-14 at 3 39 12 AM" src="https://github.com/user-attachments/assets/643969ad-a959-47a2-990e-f2be820d06d2" />
+<img width="953" height="678" alt="Screenshot 2025-09-14 at 3 39 18 AM" src="https://github.com/user-attachments/assets/526e3b60-47bd-4a57-baf5-9563ca3a6b5f" />
+<img width="737" height="450" alt="Screenshot 2025-09-14 at 3 39 25 AM" src="https://github.com/user-attachments/assets/a7660db9-2928-4ffd-a89b-918b238acfb1" />
+
 ## 🛠️ Tech Stack
 
 ### Frontend
