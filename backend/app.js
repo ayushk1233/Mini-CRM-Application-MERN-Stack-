@@ -26,7 +26,8 @@ app.use(
   cors({
     origin: [
       process.env.CLIENT_URL || "http://localhost:5173",
-      "http://localhost:4173", // fallback for dev
+      "http://localhost:4173",// fallback for dev
+      "https://mini-crm-application-mern-stack.vercel.app" 
     ],
     credentials: true,
   })
