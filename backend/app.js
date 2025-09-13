@@ -47,6 +47,11 @@ app.use("/api/auth", authRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
+// ✅ Root route for Render (friendly message)
+app.get("/", (req, res) => {
+  res.json({ message: "Mini CRM Backend is live 🚀" });
+});
+
 // ✅ Health check endpoint
 app.get("/api/health", (req, res) => {
   res.json({
