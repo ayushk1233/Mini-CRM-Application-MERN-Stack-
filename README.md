@@ -10,7 +10,7 @@
 
 - Frontend: [Live](https://mini-crm-application-mern-stack.vercel.app/)
 - Backend: [Live API](https://mini-crm-backend-1obf.onrender.com)
-
+  - To login : Email: admin@dev.com  Password : Admin@123
 ## ✨ Features
 
 ### 🔐 Authentication & Authorization
